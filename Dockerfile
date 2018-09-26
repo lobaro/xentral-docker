@@ -20,8 +20,20 @@ ENV TERM=xterm
 ENV TZ Europe/Berlin
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 
-RUN apt-get install -y php-mysql php-soap php-imap php-fpm php-zip php-gd php-xml php-curl php-mbstring
+RUN apt-get install -y php-mysql php-soap php-imap php-fpm php-zip php-gd php-xml php-curl php-mbstring php7.1-ldap
 RUN phpenmod imap
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# install ioncube
+RUN wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+RUN tar xfz ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz
+#RUN cp ./ioncube/loader-wizard.php /var/www/html/
+RUN cp ./ioncube/ioncube_loader_lin_7.1.so $(php -i | grep extension_dir | awk '{print $3}')
+RUN rm -rf ./ioncube
+RUN echo "zend_extension = \"$(php -i | grep extension_dir | awk '{print $3}')/ioncube_loader_lin_7.1.so\"" > /etc/php/7.1/apache2/conf.d/00-ioncube.ini
+RUN chmod 777 /etc/php/7.1/apache2/conf.d/00-ioncube.ini
+
+
 
 # Install Xentral (wawision)
 WORKDIR /var/www/html/
@@ -34,14 +46,13 @@ RUN tar -xzf wawision.tar.gz -C /var/www/html/ --strip-components=1
 #RUN ls /var/www/html/
 
 # redefine user
-RUN chown -R www-data:www-data /var/www
+RUN chown -R www-data:www-data /var/www/html/
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
 
-VOLUME /var/www/html
-
-# /var/www/html/userdata should be backed up
+VOLUME /var/www/html/conf
+VOLUME /var/www/html/userdata
 
 # TODO:
 #Um den Prozessstarter nutzen zu können: Tragen Sie folgendes Script in ihrer crontab ein:
@@ -53,9 +64,5 @@ VOLUME /var/www/html
 # Bitte löschen Sie den Ordner www/setup!
 
 EXPOSE 80
-
-## HERE WE ARE
-RUN ls /var/www/html
-
 
 CMD ["apachectl", "-e", "info", "-D", "FOREGROUND"]
