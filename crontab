@@ -8,5 +8,4 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m h dom mon dow user  command
-* * * * * php /var/www/html/cronjobs/starter2.php
-#
+* * * * * www-data php /var/www/html/cronjobs/starter2.php
