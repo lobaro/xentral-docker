@@ -43,15 +43,12 @@ RUN wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
 WORKDIR /var/www/html/
 
 RUN wget -O ./wawision.zip ${XENTRAL_DOWNLOAD} \
-&& rm index.html \
-&& unzip wawision.zip -d /var/www/html/
+ && rm index.html \
+ && unzip wawision.zip -d /var/www/html/ \
+ && chown -R www-data: /var/www/html/
 # in case of tar.gz use:
 #RUN tar -xzf wawision.tar.gz -C /var/www/html/ --strip-components=1
 
-#RUN ls /var/www/html/
-
-# redefine user
-RUN chown -R www-data:www-data /var/www/html/
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
@@ -61,7 +58,7 @@ VOLUME /var/www/html/userdata
 
 # Setup CRON
 COPY crontab /etc/crontab
-RUN chown root:root /etc/crontab && chmod 722 /etc/crontab
+RUN chown root: /etc/crontab && chmod 722 /etc/crontab
 
 # TODO:
 # Bitte löschen Sie den Ordner www/setup!
