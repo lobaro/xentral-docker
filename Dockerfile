@@ -36,13 +36,14 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # install ioncube
 RUN wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
 RUN tar xfz ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz
-#RUN cp ./ioncube/loader-wizard.php /var/www/html/
+RUN cp ./ioncube/loader-wizard.php.bak /var/www/html/
 RUN cp ./ioncube/ioncube_loader_lin_7.1.so $(php -i | grep extension_dir | awk '{print $3}')
 RUN rm -rf ./ioncube
 RUN echo "zend_extension = \"$(php -i | grep extension_dir | awk '{print $3}')/ioncube_loader_lin_7.1.so\"" > /etc/php/7.1/apache2/conf.d/00-ioncube.ini
 RUN chmod 777 /etc/php/7.1/apache2/conf.d/00-ioncube.ini
 
-
+# zend extention for running PHP from bash e.g. for CRON
+RUN  ln -s /etc/php/7.1/apache2/conf.d/00-ioncube.ini /etc/php/7.1/cli/conf.d/00-ioncube.ini
 
 # Install Xentral (wawision)
 WORKDIR /var/www/html/
