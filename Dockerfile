@@ -1,10 +1,15 @@
 # See also: https://github.com/mpneuried/docker_wawision/blob/master/Dockerfile
 FROM ubuntu:17.10
 
+ENV XENTRAL_DOWNLOAD=https://update.xentral.biz/download/19.1.1c1c4f2_oss_wawision.zip
+
+# https://xentral.biz/download-files/openwawision-18-1-php-quelltext/18.1.1dd84a9_oss_wawision.tar.gz
+# https://update.xentral.biz/download/19.1.1c1c4f2_oss_wawision.zip
+
 RUN apt-get update
 
 # install apache
-RUN apt-get install -y apache2 wget
+RUN apt-get install -y apache2 wget unzip cron
 RUN echo "ServerName 0.0.0.0" >> /etc/apache2/apache2.conf
 RUN apache2ctl configtest
 RUN a2enmod rewrite
@@ -39,9 +44,10 @@ RUN chmod 777 /etc/php/7.1/apache2/conf.d/00-ioncube.ini
 WORKDIR /var/www/html/
 
 #RUN ls
-RUN wget -O ./wawision.tar.gz https://xentral.biz/download-files/openwawision-18-1-php-quelltext/18.1.1dd84a9_oss_wawision.tar.gz
+RUN wget -O ./wawision.zip ${XENTRAL_DOWNLOAD}
 RUN rm index.html
-RUN tar -xzf wawision.tar.gz -C /var/www/html/ --strip-components=1
+RUN unzip wawision.zip -d /var/www/html/
+#RUN tar -xzf wawision.tar.gz -C /var/www/html/ --strip-components=1
 
 #RUN ls /var/www/html/
 
@@ -54,15 +60,21 @@ ENV APACHE_LOG_DIR /var/log/apache2
 VOLUME /var/www/html/conf
 VOLUME /var/www/html/userdata
 
+# Setup CRON
+COPY crontab /etc/crontab
+RUN chown root:root /etc/crontab
+RUN chmod 722 /etc/crontab
+
 # TODO:
-#Um den Prozessstarter nutzen zu können: Tragen Sie folgendes Script in ihrer crontab ein:
-#php /var/www/html/cronjobs/starter.php
-#
-#oder lassen Sie die Seite
-#https://172.18.0.22/www/index.php?module=welcome&action=cronjob
-#regelmässig aufrufen. Am besten eignet sich ein Interval von einer Minute.
 # Bitte löschen Sie den Ordner www/setup!
 
 EXPOSE 80
 
+COPY entry.sh /usr/local/bin/entry.sh
+RUN chmod +x /usr/local/bin/entry.sh
+RUN ln -s usr/local/bin/entry.sh / # backwards compat
+ENTRYPOINT ["sh", "/usr/local/bin/entry.sh"]
+
 CMD ["apachectl", "-e", "info", "-D", "FOREGROUND"]
+
+
