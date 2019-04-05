@@ -1,7 +1,7 @@
 # Xentral Docker Image
 Docker image for Xentral ERP (WaWision)
 
-Containes Open Source version and can be used to install Business and Enterprise versions.
+Containes Open Source version and can be used to install Business and Enterprise versions.  
 Just add your license and start an update.
 
 
