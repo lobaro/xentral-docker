@@ -20,6 +20,10 @@ RUN apt-get install -y php libapache2-mod-php php-mcrypt php-mysql php-cli
 
 ENV TERM=xterm
 
+# php.ini with increased memory_limit for CRON runner
+COPY php.ini /etc/php/7.1/apache2/php.ini
+RUN chmod 644 /etc/php/7.1/apache2/php.ini
+
 # install wawision deps
 # tzdata is needed for php-fpm
 ENV TZ Europe/Berlin
