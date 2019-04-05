@@ -8,6 +8,8 @@ ENV XENTRAL_DOWNLOAD https://update.xentral.biz/download/19.1.1c1c4f2_oss_wawisi
 # tzdata is needed for php-fpm
 ENV TZ Europe/Berlin
 
+# todo: needed?
+ENV TERM=xterm
 
 # install required system components
 RUN apt-get update \
@@ -22,9 +24,6 @@ RUN apt-get update \
 RUN echo "ServerName 0.0.0.0" >> /etc/apache2/apache2.conf
 RUN apache2ctl configtest
 RUN a2enmod rewrite
-
-# install php
-ENV TERM=xterm
 
 # install wawision deps
 RUN phpenmod imap
@@ -46,6 +45,7 @@ WORKDIR /var/www/html/
 RUN wget -O ./wawision.zip ${XENTRAL_DOWNLOAD} \
 && rm index.html \
 && unzip wawision.zip -d /var/www/html/
+# in case of tar.gz use:
 #RUN tar -xzf wawision.tar.gz -C /var/www/html/ --strip-components=1
 
 #RUN ls /var/www/html/
@@ -70,7 +70,6 @@ EXPOSE 80
 
 COPY entry.sh /usr/local/bin/entry.sh
 RUN chmod +x /usr/local/bin/entry.sh
-RUN ln -s usr/local/bin/entry.sh / # backwards compat
 ENTRYPOINT ["sh", "/usr/local/bin/entry.sh"]
 
 CMD ["apachectl", "-e", "info", "-D", "FOREGROUND"]
