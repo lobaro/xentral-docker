@@ -58,7 +58,7 @@ VOLUME /var/www/html/userdata
 
 # Setup CRON
 COPY crontab /etc/crontab
-RUN chown root: /etc/crontab && chmod 722 /etc/crontab
+RUN chown root: /etc/crontab && chmod 644 /etc/crontab
 
 # TODO:
 # Bitte löschen Sie den Ordner www/setup!
