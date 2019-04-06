@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  xentral:
+    image: lobaro/xentral-docker:latest
+    restart: always
+    volumes:
+      - /var/data/xentral/userdata:/var/www/html/userdata
+      - /var/data/xentral/conf:/var/www/html/conf
+      # Allows do run the update faster after recreating the container
+      - /var/data/xentral/download:/var/www/html/download
