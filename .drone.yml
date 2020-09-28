@@ -1,0 +1,19 @@
+---
+kind: pipeline
+name: default
+
+steps:
+  - name: publish
+    image: plugins/docker
+    when:
+      event:
+        - tag
+        - push
+
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      auto_tag: true # "latest" is only tagged on master 'push' event.
+      repo: lobaro/xentral-docker
