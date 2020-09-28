@@ -12,11 +12,9 @@ ENV TZ Europe/Berlin
 # todo: needed?
 ENV TERM=xterm
 
-RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
-
 # install required system components
 RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata \
  && apt-get install -y wget unzip cron \
  && apt-get install -y apache2 \
  && apt-get install -y php libapache2-mod-php php-mysql php-cli \
