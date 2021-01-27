@@ -56,6 +56,14 @@ ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
 
+ENV CONF_PATH /var/www/html/conf
+ENV USERDATA_PATH /var/www/html/userdata
+ENV DOWNLOADS_PATH /var/www/html/download
+
+USER $APACHE_RUN_USER
+RUN mkdir -p ${CONF_PATH} ${USERDATA_PATH} ${DOWNLOADS_PATH}
+USER root
+
 VOLUME /var/www/html/conf
 VOLUME /var/www/html/userdata
 
@@ -73,5 +81,3 @@ RUN chmod +x /usr/local/bin/entry.sh
 ENTRYPOINT ["sh", "/usr/local/bin/entry.sh"]
 
 CMD ["apachectl", "-e", "info", "-D", "FOREGROUND"]
-
-
