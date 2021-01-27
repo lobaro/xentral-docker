@@ -5,7 +5,14 @@ services:
     image: lobaro/xentral-docker:latest
     restart: always
     volumes:
-      - /var/data/xentral/userdata:/var/www/html/userdata
-      - /var/data/xentral/conf:/var/www/html/conf
+      - xentral_userdata:/var/www/html/userdata
+      - xentral_conf:/var/www/html/conf
       # Allows do run the update faster after recreating the container
-      - /var/data/xentral/download:/var/www/html/download
+      - xentral_download:/var/www/html/download
+volumes:
+  xentral_userdata:
+    driver: local
+  xentral_conf:
+    driver: local
+  xentral_download:
+    driver: local
