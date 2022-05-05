@@ -1,7 +1,7 @@
 # See also: https://github.com/mpneuried/docker_wawision/blob/master/Dockerfile
 # We used ubuntu 17 because php-mcrypt is missing in ubuntu 18
 # see: https://askubuntu.com/questions/1031921/php-mcrypt-package-missing-in-ubuntu-server-18-04-lts
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 #ENV XENTRAL_DOWNLOAD https://update.xentral.biz/download/19.1.1c1c4f2_oss_wawision.zip
 ENV XENTRAL_INSTALLER_DOWNLOAD https://github.com/xentral-erp-software-gmbh/downloads/raw/master/installer.zip
