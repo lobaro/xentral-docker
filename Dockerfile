@@ -22,7 +22,6 @@ RUN apt-get update \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
-
 # install apache
 RUN echo "ServerName 0.0.0.0" >> /etc/apache2/apache2.conf
 RUN apache2ctl configtest
@@ -47,8 +46,8 @@ WORKDIR /var/www/html/
 
 RUN wget -O ./xentral.zip ${XENTRAL_INSTALLER_DOWNLOAD} \
  && rm index.html \
- && unzip xentral.zip -d /var/www/html/ \
- && chown -R www-data: /var/www/html/
+ && unzip xentral.zip -d /var/www/installer/ \
+ && chown -R www-data: /var/www/installer/
 # in case of tar.gz use:
 #RUN tar -xzf wawision.tar.gz -C /var/www/html/ --strip-components=1
 
@@ -56,16 +55,22 @@ ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
 
-ENV CONF_PATH /var/www/html/conf
-ENV USERDATA_PATH /var/www/html/userdata
-ENV DOWNLOADS_PATH /var/www/html/download
+# TODO: Must be handled by a script
+# ENV CONF_PATH /var/www/html/conf
+# ENV USERDATA_PATH /var/www/html/userdata
+# ENV DOWNLOADS_PATH /var/www/html/download
 
-USER $APACHE_RUN_USER
-RUN mkdir -p ${CONF_PATH} ${USERDATA_PATH} ${DOWNLOADS_PATH}
-USER root
+# USER $APACHE_RUN_USER
+# RUN mkdir -p ${CONF_PATH} ${USERDATA_PATH} ${DOWNLOADS_PATH}
+# USER root
 
-VOLUME /var/www/html/conf
-VOLUME /var/www/html/userdata
+# /conf and  /userdata are important
+# But also the application script are state that is updated, so we should keep the whole /html folder as a volume
+VOLUME /var/www/html
+
+# TODO: make sure that apache is not creating too much log inside the container
+# Logs are at:
+# VOLUME /var/log/apache2
 
 # Setup CRON
 COPY crontab /etc/crontab
