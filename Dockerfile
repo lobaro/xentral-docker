@@ -24,7 +24,7 @@ RUN apt-get update \
 
 # install apache
 RUN echo "ServerName 0.0.0.0" >> /etc/apache2/apache2.conf \
-    && RUN apache2ctl configtest \
+    && apache2ctl configtest \
     && a2enmod rewrite \
 # install wawision deps
     && phpenmod imap
