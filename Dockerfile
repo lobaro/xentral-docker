@@ -71,6 +71,8 @@ VOLUME /var/www/html
 # Logs are at:
 # VOLUME /var/log/apache2
 
+COPY apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+
 # Setup CRON
 COPY crontab /etc/crontab
 RUN chown root: /etc/crontab && chmod 644 /etc/crontab
