@@ -23,23 +23,22 @@ RUN apt-get update \
 
 
 # install apache
-RUN echo "ServerName 0.0.0.0" >> /etc/apache2/apache2.conf
-RUN apache2ctl configtest
-RUN a2enmod rewrite
-
+RUN echo "ServerName 0.0.0.0" >> /etc/apache2/apache2.conf \
+    && RUN apache2ctl configtest \
+    && a2enmod rewrite \
 # install wawision deps
-RUN phpenmod imap
+    && phpenmod imap
 
 # install ioncube
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
  && tar xfz ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz \
  && cp ./ioncube/loader-wizard.php /var/www/html/loader-wizard.php.bak \
- && cp ./ioncube/ioncube_loader_lin_7.2.so $(php -i | grep extension_dir | awk '{print $3}') \
+ && cp ./ioncube/ioncube_loader_lin_7.4.so $(php -i | grep extension_dir | awk '{print $3}') \
  && rm -rf ./ioncube \
- && echo "zend_extension = \"$(php -i | grep extension_dir | awk '{print $3}')/ioncube_loader_lin_7.2.so\"" > /etc/php/7.2/apache2/conf.d/00-ioncube.ini \
- && chmod 777 /etc/php/7.2/apache2/conf.d/00-ioncube.ini \
+ && echo "zend_extension = \"$(php -i | grep extension_dir | awk '{print $3}')/ioncube_loader_lin_7.4.so\"" > /etc/php/7.4/apache2/conf.d/00-ioncube.ini \
+ && chmod 777 /etc/php/7.4/apache2/conf.d/00-ioncube.ini \
  # zend extention for running PHP from bash e.g. for CRON
- && ln -s /etc/php/7.2/apache2/conf.d/00-ioncube.ini /etc/php/7.2/cli/conf.d/00-ioncube.ini
+ && ln -s /etc/php/7.4/apache2/conf.d/00-ioncube.ini /etc/php/7.4/cli/conf.d/00-ioncube.ini
 
 # Install Xentral (wawision)
 WORKDIR /var/www/html/
