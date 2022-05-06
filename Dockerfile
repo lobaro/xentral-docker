@@ -18,7 +18,7 @@ RUN apt-get update \
  && apt-get install -y wget unzip cron \
  && apt-get install -y apache2 \
  && apt-get install -y php libapache2-mod-php php-mysql php-cli \
- && apt-get install -y php-mysql php-soap php-imap php-fpm php-zip php-gd php-xml php-curl php-mbstring php-ldap \
+ && apt-get install -y php-mysql php-soap php-imap php-fpm php-zip php-gd php-xml php-curl php-mbstring php-ldap php-intl \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
