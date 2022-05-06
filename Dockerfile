@@ -16,8 +16,9 @@ ENV TERM=xterm
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata \
  && apt-get install -y wget unzip cron zip \
- && apt-get install -y apache2 \
- && apt-get install -y php libapache2-mod-php php-mysql php-cli \
+ #&& apt-get install -y apache2 libapache2-mod-php\
+ && apt-get install -y nginx\
+ && apt-get install -y php php-mysql php-cli \
  && apt-get install -y php-mysql php-soap php-imap php-fpm php-zip php-gd php-xml php-curl php-mbstring php-ldap php-intl php-ssh2 \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -72,6 +73,7 @@ VOLUME /var/www/html
 # VOLUME /var/log/apache2
 
 COPY apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY nginx/xentral.conf /etc/nginx/conf.d/xentral.conf
 
 # Setup CRON
 COPY cron.d/xentral /etc/cron.d/xentral
@@ -86,4 +88,13 @@ COPY entry.sh /usr/local/bin/entry.sh
 RUN chmod +x /usr/local/bin/entry.sh
 ENTRYPOINT ["sh", "/usr/local/bin/entry.sh"]
 
-CMD ["apachectl", "-e", "info", "-D", "FOREGROUND"]
+
+# NGINX startup
+#ExecStartPre=/usr/sbin/nginx -t -q -g 'daemon on; master_process on;'
+#ExecStart=/usr/sbin/nginx -g 'daemon on; master_process on;'
+#ExecReload=/usr/sbin/nginx -g 'daemon on; master_process on;' -s reload
+#ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/nginx.pid
+
+
+#CMD ["apachectl", "-e", "info", "-D", "FOREGROUND"]
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]

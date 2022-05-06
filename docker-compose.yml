@@ -2,17 +2,11 @@ version: '3'
 
 services:
   xentral:
-    image: lobaro/xentral-docker:latest
+    image:  lobaro/xentral-docker:latest
+    ports:
+      - "8881:80"
     restart: always
     volumes:
-      - xentral_userdata:/var/www/html/userdata
-      - xentral_conf:/var/www/html/conf
-      # Allows do run the update faster after recreating the container
-      - xentral_download:/var/www/html/download
+      - xentral:/var/data/xentral2/html
 volumes:
-  xentral_userdata:
-    driver: local
-  xentral_conf:
-    driver: local
-  xentral_download:
-    driver: local
+  xentral:

@@ -8,4 +8,6 @@ set -e
 service cron start
 service cron status
 
+echo "starting $@"
+
 exec "$@"
