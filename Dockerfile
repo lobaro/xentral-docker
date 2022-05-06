@@ -16,7 +16,6 @@ ENV TERM=xterm
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata \
  && apt-get install -y wget unzip cron zip \
- #&& apt-get install -y apache2 libapache2-mod-php\
  && apt-get install -y nginx\
  && apt-get install -y php php-mysql php-cli \
  && apt-get install -y php-mysql php-soap php-imap php-fpm php-zip php-gd php-xml php-curl php-mbstring php-ldap php-intl php-ssh2 \
@@ -34,7 +33,7 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
  && echo "zend_extension = \"$(php -i | grep extension_dir | awk '{print $3}')/ioncube_loader_lin_7.4.so\"" > /etc/php/7.4/mods-available/00-ioncube.ini \
  && chmod 777 /etc/php/7.4/mods-available/00-ioncube.ini \
  # zend extention for running PHP from bash e.g. for CRON
- && ln -s /etc/php/7.4/mods-available/00-ioncube.ini /etc/php/7.4/fpm/conf.d/00-ioncube.ini
+ && ln -s /etc/php/7.4/mods-available/00-ioncube.ini /etc/php/7.4/fpm/conf.d/00-ioncube.ini \
  && ln -s /etc/php/7.4/mods-available/00-ioncube.ini /etc/php/7.4/cli/conf.d/00-ioncube.ini
 
 # Install Xentral (wawision)
@@ -52,17 +51,10 @@ RUN wget -O ./xentral.zip ${XENTRAL_INSTALLER_DOWNLOAD} \
 # ENV USERDATA_PATH /var/www/html/userdata
 # ENV DOWNLOADS_PATH /var/www/html/download
 
-# USER $APACHE_RUN_USER
-# RUN mkdir -p ${CONF_PATH} ${USERDATA_PATH} ${DOWNLOADS_PATH}
-# USER root
 
 # /conf and  /userdata are important
 # But also the application script are state that is updated, so we should keep the whole /html folder as a volume
 VOLUME /var/www/html
-
-# TODO: make sure that apache is not creating too much log inside the container
-# Logs are at:
-# VOLUME /var/log/apache2
 
 COPY nginx/sites-available/default /etc/nginx/sites-available/default
 COPY nginx/info.php /var/www/html/www/info.php
@@ -84,13 +76,4 @@ COPY entry.sh /usr/local/bin/entry.sh
 RUN chmod +x /usr/local/bin/entry.sh
 ENTRYPOINT ["sh", "/usr/local/bin/entry.sh"]
 
-
-# NGINX startup
-#ExecStartPre=/usr/sbin/nginx -t -q -g 'daemon on; master_process on;'
-#ExecStart=/usr/sbin/nginx -g 'daemon on; master_process on;'
-#ExecReload=/usr/sbin/nginx -g 'daemon on; master_process on;' -s reload
-#ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/nginx.pid
-
-
-#CMD ["apachectl", "-e", "info", "-D", "FOREGROUND"]
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
