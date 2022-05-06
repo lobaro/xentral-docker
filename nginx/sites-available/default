@@ -17,7 +17,7 @@ server {
         # With php5-fpm:
         fastcgi_pass unix:/run/php/php7.4-fpm.sock;
         fastcgi_index index.php;
-        include fastcgi_params;
+        include fastcgi.conf;
     }
 
     # deny access to .htaccess files, if Apache's document root concurs with nginx's one

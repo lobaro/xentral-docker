@@ -22,13 +22,8 @@ RUN apt-get update \
  && apt-get install -y php-mysql php-soap php-imap php-fpm php-zip php-gd php-xml php-curl php-mbstring php-ldap php-intl php-ssh2 \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
-# install apache
-RUN echo "ServerName 0.0.0.0" >> /etc/apache2/apache2.conf \
-    && apache2ctl configtest \
-    && a2enmod rewrite \
 # install wawision deps
-    && phpenmod imap
+RUN phpenmod imap
 
 # install ioncube
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
@@ -36,10 +31,11 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
  && cp ./ioncube/loader-wizard.php /var/www/html/loader-wizard.php.bak \
  && cp ./ioncube/ioncube_loader_lin_7.4.so $(php -i | grep extension_dir | awk '{print $3}') \
  && rm -rf ./ioncube \
- && echo "zend_extension = \"$(php -i | grep extension_dir | awk '{print $3}')/ioncube_loader_lin_7.4.so\"" > /etc/php/7.4/apache2/conf.d/00-ioncube.ini \
- && chmod 777 /etc/php/7.4/apache2/conf.d/00-ioncube.ini \
+ && echo "zend_extension = \"$(php -i | grep extension_dir | awk '{print $3}')/ioncube_loader_lin_7.4.so\"" > /etc/php/7.4/mods-available/00-ioncube.ini \
+ && chmod 777 /etc/php/7.4/mods-available/00-ioncube.ini \
  # zend extention for running PHP from bash e.g. for CRON
- && ln -s /etc/php/7.4/apache2/conf.d/00-ioncube.ini /etc/php/7.4/cli/conf.d/00-ioncube.ini
+ && ln -s /etc/php/7.4/mods-available/00-ioncube.ini /etc/php/7.4/fpm/conf.d/00-ioncube.ini
+ && ln -s /etc/php/7.4/mods-available/00-ioncube.ini /etc/php/7.4/cli/conf.d/00-ioncube.ini
 
 # Install Xentral (wawision)
 WORKDIR /var/www/html/
@@ -50,10 +46,6 @@ RUN wget -O ./xentral.zip ${XENTRAL_INSTALLER_DOWNLOAD} \
  && chown -R www-data: /var/www/installer/
 # in case of tar.gz use:
 #RUN tar -xzf wawision.tar.gz -C /var/www/html/ --strip-components=1
-
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_LOG_DIR /var/log/apache2
 
 # TODO: Must be handled by a script
 # ENV CONF_PATH /var/www/html/conf
@@ -72,7 +64,6 @@ VOLUME /var/www/html
 # Logs are at:
 # VOLUME /var/log/apache2
 
-COPY apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY nginx/sites-available/default /etc/nginx/sites-available/default
 COPY nginx/info.php /var/www/html/www/info.php
 
