@@ -74,8 +74,8 @@ VOLUME /var/www/html
 COPY apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Setup CRON
-COPY crontab /etc/crontab
-RUN chown root: /etc/crontab && chmod 644 /etc/crontab
+COPY cron.d/xentral /etc/cron.d/xentral
+RUN chown root: /etc/cron.d/xentral && chmod 644 /etc/cron.d/xentral
 
 # TODO:
 # Bitte löschen Sie den Ordner www/setup!
