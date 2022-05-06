@@ -8,6 +8,8 @@ set -e
 service cron start
 service cron status
 
+php-fpm7.4 -D
+
 echo "starting $@"
 
 exec "$@"

@@ -73,11 +73,16 @@ VOLUME /var/www/html
 # VOLUME /var/log/apache2
 
 COPY apache/000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY nginx/xentral.conf /etc/nginx/conf.d/xentral.conf
+COPY nginx/sites-available/default /etc/nginx/sites-available/default
+COPY nginx/info.php /var/www/html/www/info.php
 
 # Setup CRON
 COPY cron.d/xentral /etc/cron.d/xentral
 RUN chown root: /etc/cron.d/xentral && chmod 644 /etc/cron.d/xentral
+
+# Forward request logs to Docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # TODO:
 # Bitte löschen Sie den Ordner www/setup!
