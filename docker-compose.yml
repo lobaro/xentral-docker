@@ -7,6 +7,7 @@ services:
       - "8881:80"
     restart: always
     volumes:
-      - xentral:/var/data/xentral2/html
+#      - xentral:/var/www/html
+      - ./web:/var/www/html/www/web
 volumes:
   xentral:

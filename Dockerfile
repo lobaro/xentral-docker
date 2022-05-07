@@ -16,7 +16,7 @@ ENV TERM=xterm
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata \
  && apt-get install -y wget unzip cron zip \
- && apt-get install -y nginx\
+ && apt-get install -y nginx \
  && apt-get install -y php php-mysql php-cli \
  && apt-get install -y php-mysql php-soap php-imap php-fpm php-zip php-gd php-xml php-curl php-mbstring php-ldap php-intl php-ssh2 \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
